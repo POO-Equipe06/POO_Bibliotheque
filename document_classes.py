@@ -1,8 +1,7 @@
-# Classes for different types of documents in the library.
+# Classes for all documents class and subclasses in the library.
 
 from datetime import date, datetime
 import itertools
-
 
 # ─────────────────────────────────
 # Safe validation functions
@@ -15,7 +14,7 @@ def safe_str(value, fallback="Inconnu") -> str:
     except:
         return fallback
 
-
+# safely convert different types of input into a boolean (True or False) to avoid errors
 def safe_bool(value, fallback=True) -> bool:
     if isinstance(value, bool):
         return value
@@ -29,7 +28,7 @@ def safe_bool(value, fallback=True) -> bool:
         return value != 0
     return fallback
 
-
+# if date is incorrect the function will replace it by today date.
 def safe_date(value, fallback=None) -> date:
     if isinstance(value, date):
         return value
@@ -39,7 +38,6 @@ def safe_date(value, fallback=None) -> date:
         except:
             pass
     return fallback or date.today()
-
 
 # ─────────────────────────────────
 # Base class: Document
@@ -56,7 +54,6 @@ class Document:
         """String representation"""
         return f"[{self.__class__.__name__} #{self.id}] '{self.titre}'"
 
-
 # ─────────────────────────────────
 # Document types (Livre, Bande Dessinee, Dictionnaire, Journal)
 # ─────────────────────────────────
@@ -71,7 +68,6 @@ class Livre(Document):
         statut = "✅ Disponible" if self.est_disponible else "❌ Emprunté"
         return f"[Livre #{self.id}] '{self.titre}' par {self.auteur} — {statut}"
 
-
 class BandeDessinee(Document):
     def __init__(self, titre: str, auteur: str, dessinateur: str):
         super().__init__(titre)
@@ -79,11 +75,8 @@ class BandeDessinee(Document):
         self.dessinateur = safe_str(dessinateur)
 
     def __str__(self):
-        return (
-            f"[BD #{self.id}] '{self.titre}' — "
-            f"Scénario: {self.auteur}, Dessin: {self.dessinateur}"
-        )
-
+        return (f"[BD #{self.id}] '{self.titre}' — "
+            f"Scénario: {self.auteur}, Dessin: {self.dessinateur}")
 
 class Dictionnaire(Document):
     def __init__(self, titre: str, langue: str):
@@ -92,7 +85,6 @@ class Dictionnaire(Document):
 
     def __str__(self):
         return f"[Dictionnaire #{self.id}] '{self.titre}' — {self.langue}"
-
 
 class Journal(Document):
     def __init__(self, titre: str, date_parution):
