@@ -40,7 +40,7 @@ def safe_date(value, fallback=None) -> date:
     return fallback or date.today()
 
 # ─────────────────────────────────
-# Base class: Document
+# Super root class: Document
 # ─────────────────────────────────
 
 class Document:
@@ -55,10 +55,21 @@ class Document:
         return f"[{self.__class__.__name__} #{self.id}] '{self.titre}'"
 
 # ─────────────────────────────────
+# root class: Volume
+# ─────────────────────────────────
+
+class Volume(Document):
+    """Classe intermédiaire pour Dictionnaire, BD et Livre"""
+
+    def __init__(self, titre: str):
+        super().__init__(titre)
+        self.volume_id = 0  # pour différencier les volumes
+
+# ─────────────────────────────────
 # Document types (Livre, Bande Dessinee, Dictionnaire, Journal)
 # ─────────────────────────────────
 
-class Livre(Document):
+class Livre(Volume):
     def __init__(self, titre: str, auteur: str, est_disponible=True):
         super().__init__(titre)
         self.auteur = safe_str(auteur)
@@ -68,7 +79,7 @@ class Livre(Document):
         statut = "✅ Disponible" if self.est_disponible else "❌ Emprunté"
         return f"[Livre #{self.id}] '{self.titre}' par {self.auteur} — {statut}"
 
-class BandeDessinee(Document):
+class BandeDessinee(Volume):
     def __init__(self, titre: str, auteur: str, dessinateur: str):
         super().__init__(titre)
         self.auteur = safe_str(auteur)
@@ -78,7 +89,7 @@ class BandeDessinee(Document):
         return (f"[BD #{self.id}] '{self.titre}' — "
             f"Scénario: {self.auteur}, Dessin: {self.dessinateur}")
 
-class Dictionnaire(Document):
+class Dictionnaire(Volume):
     def __init__(self, titre: str, langue: str):
         super().__init__(titre)
         self.langue = safe_str(langue)
